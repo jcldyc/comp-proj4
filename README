@@ -1,0 +1,103 @@
+Anthony Gianino (AJG275)
+Project 1 - Part 4 - README
+12/5/17
+
+mT.l
+------------------------------------------------------------
+This is the .l file to be used with flex in order to
+generate lex.yy.c. I named it "mT" for "mini-Turing."
+
+mT.y
+------------------------------------------------------------
+This is the .y file to be used with bison in order to
+generate y.tab.c and y.tab.h. I named it "mT" for
+"mini-Turing."
+
+tree.c / tree.h
+------------------------------------------------------------
+These files contain the tree structure and related functions
+for assistance in building the abstract syntax tree
+mentioned below (in main.c).
+
+ST.h
+------------------------------------------------------------
+This file contains the struct definition necessary for
+each symbol table entry used within check.c, in addition to
+declaring the symbol table itself. 
+
+check.c
+------------------------------------------------------------
+This file contains all compiler-wide functions, including
+abstract syntax tree traversal, type-checking, scope
+handling, compilation error handling, and symbol table
+maintenance. 
+
+Scopes are implemented as entirely unique symbol tables,
+connected via a linked list of symbol tables. Entering a new
+scope "pushes" a new symbol table into the list, and exiting
+a scope "pops" the current symbol table off of the list.
+Accessing identifiers referenced in higher-level scopes is
+acheived by traversing the linked list.
+
+instr.h / instr.c
+------------------------------------------------------------
+These files contain machine instructions, opcodes, and
+related functions necessary for assembly code generation for
+Schulte's machine.
+
+code.h / code.c
+------------------------------------------------------------
+These files contain the structures and functions necessary
+for utilizing instr.h/instr.c machine instructions to print
+syntactically correct assembly language code to a specified
+output file (which is defined in main.c).
+
+generate.c
+------------------------------------------------------------
+This file contains all code-generation-based functions,
+including abstract syntax tree traversal, "DATA" block
+generation, and eveything that could be categorized under
+"CODE" block generation.
+
+main.c
+------------------------------------------------------------
+This is the source code for the parser/compiler. It utilizes
+lex.yy.c (and mT.l by extension) to tokenize a user input
+file, and then y.tab.h/y.tab.c (and mT.y by extension) to
+parse through those tokens. Next, by utilizing tree.h and
+tree.c, the parsed tokens are arranged into an abstract
+syntax tree.
+
+Then, that abstract syntax tree is traversed by functions in
+check.c, which print any compilation errors to the screen,
+in addition to printing out the current symbol table before
+exiting each scope. Please note that symbol tables only
+contain the idents declared within their own scope, NOT any
+parent scope(s).
+
+After compilation checking has been preformed (see above),
+that abstract syntax tree is traversed again, but this time
+by functions in generate.c. The functions in generate.c
+generate and print assembly language code to a user-defined
+output file.
+
+DEV NOTE: binding is not implemented at all.
+
+DEV NOTE: records are not implemented in generate.c, per
+Shculte's suggestion/direction.
+
+Makefile
+------------------------------------------------------------
+This is a Makefile. The commands include:
+- make / make all
+  - generates lex.yy.c from mT.l using flex
+  - generates y.tab.h and y.tab.c from mT.y using bison
+  - compiles turing from main.c, lex.yy.c, y.tab.h, y.tab.c,
+    ST.h, tree.h, tree.c, check.c, instr.h, instr.c, code.h,
+    code.c, and generate.c using gcc
+  - calls the clean command to remove leftover .o files
+- make clean
+  - removes any leftover .o files
+- make cleanfull
+  - removes turing, lex.yy.c, y.tab.h, and y.tab.c
+
